@@ -1,25 +1,28 @@
 import type { NextFunction, Request, Response } from 'express';
-import BlogService from '@/services/blogs.service';
+import BlogService from '../services/blogs.service';
+import { success } from '../utils/response';
 
 class BlogsController {
-  protected blogService: BlogService;
+  protected blogService = new BlogService();
 
-  public getBlogs = async (req: Request, res: Response, next: NextFunction) => {
+  public getBlogs = async (req: Request, res: Response) => {
     try {
       const blogs = await this.blogService.findAllBlogs();
-      res.status(200).json({ data: blogs, message: 'findAll' });
+
+      return success(res, blogs);
     } catch (error) {
-      next(error);
+      return error(res, error.message, 500);
     }
   };
 
-  public getBlogById = async (req: Request, res: Response, next: NextFunction) => {
+  public getBlogById = async (req: Request, res: Response) => {
     try {
       const blogId = Number(req.params.id);
       const blog = await this.blogService.findBlogById(blogId);
-      res.status(200).json({ data: blog, message: 'findOne' });
+
+      return success(res, blog);
     } catch (error) {
-      next(error);
+      return error(res, error.message, 500);
     }
   };
 

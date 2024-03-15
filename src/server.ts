@@ -1,6 +1,12 @@
 import App from './app';
-import BlogRoute from '@routes/blog.route';
+import BlogRoute from './routes/blog.route';
 
-const app = new App([new BlogRoute()]);
+const routes = [new BlogRoute()];
 
-app.listen();
+try {
+  const app = new App(routes);
+  app.listen();
+} catch (error) {
+  console.error(`Error starting server: ${error}`);
+  process.exit(1);
+}

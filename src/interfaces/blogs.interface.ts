@@ -1,6 +1,6 @@
-import { Status } from '@/interfaces/global.interface';
-import { Category } from '@/models/categories.model';
-import { Tag } from '@/models/tags.model';
+import { Status } from './global.interface';
+import { Category } from '../models/categories.model';
+import { Tag } from '../models/tags.model';
 
 export interface IBlog {
   title: string;

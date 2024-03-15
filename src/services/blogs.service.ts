@@ -1,7 +1,7 @@
-import { BlogCreateDto } from '@/dtos/create-blog.dto';
-import { HttpException } from '@/exceptions/HttpException';
-import { isEmpty } from '@/utils/util';
-import blogModel from '@/models/blogs.model';
+import { BlogCreateDto } from '../dtos/create-blog.dto';
+import { HttpException } from '../exceptions/HttpException';
+import { isEmpty } from '../utils/util';
+import blogModel from '../models/blogs.model';
 import slugify from 'slugify';
 
 class BlogService {

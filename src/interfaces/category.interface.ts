@@ -1,4 +1,4 @@
-import { Status } from '@/interfaces/global.interface';
+import { Status } from './global.interface';
 
 export interface ICategory {
   title: string;

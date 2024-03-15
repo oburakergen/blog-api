@@ -1,5 +1,5 @@
 import { IsString, IsNotEmpty, IsArray, IsOptional } from 'class-validator';
-import { IBlog } from '@/interfaces/blogs.interface';
+import { IBlog } from '../interfaces/blogs.interface';
 
 export type BlogCreate = Pick<IBlog, 'title' | 'slug'>;
 

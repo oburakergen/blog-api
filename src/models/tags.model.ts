@@ -1,6 +1,6 @@
 import { model, Schema, Document } from 'mongoose';
-import { ITag } from '@/interfaces/tags.interface';
-import { DOCUMENT_NAME, COLLECTION_NAME } from '@/constants/db.constant';
+import { ITag } from '../interfaces/tags.interface';
+import { DOCUMENT_NAME, COLLECTION_NAME } from '../constants/db.constant';
 
 export interface Tag extends ITag, Document {}
 

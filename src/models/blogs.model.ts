@@ -1,7 +1,7 @@
 import { model, Schema, Document } from 'mongoose';
-import { IBlog } from '@/interfaces/blogs.interface';
-import { Status } from '@/interfaces/global.interface';
-import { DOCUMENT_NAME, COLLECTION_NAME } from '@/constants/db.constant';
+import { IBlog } from '../interfaces/blogs.interface';
+import { Status } from '../interfaces/global.interface';
+import { DOCUMENT_NAME, COLLECTION_NAME } from '../constants/db.constant';
 
 export interface Blog extends IBlog, Document {}
 

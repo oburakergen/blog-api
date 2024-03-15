@@ -1,7 +1,7 @@
 import { model, Schema, Document } from 'mongoose';
-import { ICategory } from '@/interfaces/category.interface';
-import { Status } from '@/interfaces/global.interface';
-import { DOCUMENT_NAME, COLLECTION_NAME } from '@/constants/db.constant';
+import { ICategory } from '../interfaces/category.interface';
+import { Status } from '../interfaces/global.interface';
+import { DOCUMENT_NAME, COLLECTION_NAME } from '../constants/db.constant';
 
 export interface Category extends ICategory, Document {}
 
