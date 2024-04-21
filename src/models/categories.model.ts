@@ -29,6 +29,9 @@ const schema = new Schema<Category>({
     type: Date,
     default: Date.now,
   },
+  parentCategory: {
+    type: String,
+  },
 });
 
 const categoryModel = model<Category>(DOCUMENT_NAME.Category, schema, COLLECTION_NAME.Category);

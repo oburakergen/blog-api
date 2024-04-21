@@ -1,7 +1,8 @@
 import App from './app';
 import BlogRoute from './routes/blog.route';
+import CategoryRoute from './routes/category.route';
 
-const routes = [new BlogRoute()];
+const routes = [new BlogRoute(), new CategoryRoute()];
 
 try {
   const app = new App(routes);

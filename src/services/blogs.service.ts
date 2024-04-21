@@ -1,14 +1,18 @@
-import { BlogCreateDto } from '../dtos/create-blog.dto';
+import { BlogCreate } from '../dtos/blog.dto';
 import { HttpException } from '../exceptions/HttpException';
-import { isEmpty } from '../utils/util';
 import blogModel from '../models/blogs.model';
 import slugify from 'slugify';
 
 class BlogService {
   private blogs = blogModel;
 
-  public async createBlog(blogData: BlogCreateDto) {
-    if (isEmpty(blogData)) throw new HttpException(400, 'blogData is empty');
+  public async findAllBlogs(): Promise<BlogCreate[]> {
+    const blogs = await this.blogs.find();
+
+    return blogs;
+  }
+
+  public async createBlog(blogData: BlogCreate) {
     await this.blogs.create({
       ...blogData,
       slug: slugify(blogData.title, {
@@ -19,22 +23,30 @@ class BlogService {
     return blogData;
   }
 
-  public async findAllBlogs() {
-    const blogs = await this.blogs.find();
-
-    return blogs;
-  }
-
   public async findBlogById(blogId: number) {
-    // Logic to find a blvog by id
+    const findBlog = this.blogs.findOne({ where: { id: blogId } });
+    if (!findBlog) throw new HttpException(409, "You're not a blog");
+
+    return findBlog;
   }
 
-  public async updateBlog(blogId: number, blogData: BlogCreateDto) {
+  public async updateBlog(blogId: number, blogData) {
     // Logic to update a blog
+    const findBlog = this.blogs.findOne({ where: { id: blogId } });
+    if (!findBlog) throw new HttpException(409, "You're not a blog");
+
+    await findBlog.updateOne({ where: { id: blogId }, ...blogData });
+
+    return findBlog;
   }
 
   public async deleteBlog(blogId: number) {
-    // Logic to delete a blog
+    const findBlog = this.blogs.findOne({ where: { id: blogId } });
+    if (!findBlog) throw new HttpException(409, "You're not a blog");
+
+    await findBlog.deleteOne({ where: { id: blogId } });
+
+    return findBlog;
   }
 }
 
