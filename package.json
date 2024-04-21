@@ -13,9 +13,11 @@
   "keywords": [
     "typescript",
     "express",
-    "mongodb",
+    "mongoose",
+    "aws-s3",
     "api",
-    "blog"
+    "morgan",
+    "winston"
   ],
   "author": "osman burak ergen",
   "license": "ISC",
