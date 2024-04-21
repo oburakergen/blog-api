@@ -4,6 +4,7 @@ import type { Routes } from './interfaces/routes.interface';
 import logger from './utils/logger';
 import { connect, connection } from 'mongoose';
 import morgan from './utils/morgan';
+import path from 'path';
 
 class App {
   protected app: Application;
@@ -42,6 +43,8 @@ class App {
     this.app.use(morgan.errorHandler);
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(express.static(path.join(__dirname, 'views')));
+    this.app.use('/static', express.static(path.join(__dirname, 'public')));
   }
 
   private async initializeMongoDB() {

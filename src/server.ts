@@ -1,8 +1,9 @@
 import App from './app';
 import BlogRoute from './routes/blog.route';
 import CategoryRoute from './routes/category.route';
+import SwaggerRoute from './routes/swagger.route';
 
-const routes = [new BlogRoute(), new CategoryRoute()];
+const routes = [new BlogRoute(), new CategoryRoute(), new SwaggerRoute()];
 
 try {
   const app = new App(routes);

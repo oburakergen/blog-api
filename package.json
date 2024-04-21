@@ -10,6 +10,10 @@
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
     "lint:fix": "npm run lint -- --fix"
   },
+  "repository":  {
+    "type": "git",
+    "url": "https://github.com/oburakergen/blog-api.git"
+  },
   "keywords": [
     "typescript",
     "express",
