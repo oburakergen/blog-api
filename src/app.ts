@@ -5,6 +5,7 @@ import logger from './utils/logger';
 import { connect, connection } from 'mongoose';
 import morgan from './utils/morgan';
 import path from 'path';
+import engines from 'consolidate';
 
 class App {
   protected app: Application;
@@ -43,8 +44,10 @@ class App {
     this.app.use(morgan.errorHandler);
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
-    this.app.use(express.static(path.join(__dirname, 'views')));
-    this.app.use('/static', express.static(path.join(__dirname, 'public')));
+    this.app.use(express.static(path.join(__dirname, '../public')));
+    this.app.engine('html', engines.mustache);
+    this.app.set('view engine', 'html');
+    express.static.mime.define({ 'text/css': ['css'] });
   }
 
   private async initializeMongoDB() {

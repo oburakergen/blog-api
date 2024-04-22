@@ -1,8 +1,8 @@
 import { Routes } from '../interfaces/routes.interface';
-import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import swaggerDefinition from '../utils/swagger';
 import { Router, type Request, type Response } from 'express';
+import yaml from 'yamljs';
+import path from 'path';
 
 class SwaggerRoute implements Routes {
   public path = '/';
@@ -13,18 +13,12 @@ class SwaggerRoute implements Routes {
   }
 
   private initializeRoutes() {
-    const specs = swaggerJsdoc(swaggerDefinition);
+    const specs = yaml.load(path.join(__dirname, '../../openapi.yml'));
 
     this.router.get('/', (req: Request, res: Response) => {
       res.render('index', { title: 'Express' });
     });
-    this.router.get(
-      `${this.path}api-docs`,
-      swaggerUi.serve,
-      swaggerUi.setup(specs, {
-        explorer: true,
-      }),
-    );
+    this.router.use(`${this.path}docs`, swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
   }
 }
 
