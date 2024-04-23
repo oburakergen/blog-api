@@ -6,7 +6,6 @@ import { connect, connection } from 'mongoose';
 import morgan from './utils/morgan';
 import path from 'path';
 import engines from 'consolidate';
-import bodyParser from 'body-parser';
 
 class App {
   protected app: Application;
@@ -43,8 +42,8 @@ class App {
   private initializeMiddlewares() {
     this.app.use(morgan.successHandler);
     this.app.use(morgan.errorHandler);
-    this.app.use(bodyParser.json());
-    this.app.use(bodyParser.urlencoded({ extended: true }));
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.static(path.join(__dirname, '../public')));
     this.app.engine('html', engines.mustache);
     this.app.set('view engine', 'html');

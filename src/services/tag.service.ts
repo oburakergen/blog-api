@@ -12,13 +12,20 @@ class TagService {
     return items;
   }
 
-  public async findById(id: number) {
+  public async findById(id: string) {
     const item = await this.tags.findById(id);
 
     return item;
   }
 
   public async create(data: TagCreate) {
+    const slug = slugify(data.title, {
+      replacement: '-',
+    });
+
+    const isExist = await this.tags.findOne({ slug });
+    if (isExist) throw new HttpException(409, `Tag with slug ${slug} already exists`);
+
     await this.tags.create({
       ...data,
       slug: slugify(data.title, {
@@ -29,22 +36,28 @@ class TagService {
     return data;
   }
 
-  public async update(id: number, data: TagCreate) {
-    await this.tags.findByIdAndUpdate(id, {
-      ...data,
-      slug: slugify(data.title, {
-        replacement: '-',
-      }),
-    });
+  public async update(id: string, data: TagCreate) {
+    const item = await this.tags.findByIdAndUpdate(
+      id,
+      {
+        ...data,
+        slug: slugify(data.title, {
+          replacement: '-',
+        }),
+      },
+      { new: false },
+    );
 
-    return data;
+    if (!item) throw new HttpException(409, `Tag with id ${id} not found`);
+
+    return item;
   }
 
-  public async delete(id: number) {
-    const findBlog = this.tags.findOne({ where: { id } });
+  public async delete(id: string) {
+    const findBlog = this.tags.findById(id);
     if (!findBlog) throw new HttpException(409, "You're not a tag");
 
-    await findBlog.deleteOne({ where: { id } });
+    await findBlog.deleteOne({ id });
 
     return findBlog;
   }

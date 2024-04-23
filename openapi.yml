@@ -106,7 +106,7 @@ paths:
         '200':
           description: Successful operation
           content:
-            application/json:
+            multipart/form-data:
               schema:
                 $ref: '#/components/schemas/Blog'
         '400':
@@ -205,7 +205,7 @@ paths:
         '200':
           description: Successful operation
           content:
-            application/json:
+            multipart/form-data:
               schema:
                 $ref: '#/components/schemas/Category'
         '400':
@@ -287,9 +287,10 @@ paths:
           description: Invalid input
         '422':
           description: Validation exception
+  /tags/{tagId}:
     put:
       parameters:
-        - name: id
+        - name: tagId
           in: path
           description: ID of tag that needs to be updated
           required: true
@@ -322,7 +323,7 @@ paths:
         required: true
     delete:
       parameters:
-        - name: id
+        - name: tagId
           in: path
           description: ID of tag that needs to be deleted
           required: true
