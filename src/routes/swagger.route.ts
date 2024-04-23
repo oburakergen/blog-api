@@ -18,7 +18,7 @@ class SwaggerRoute implements Routes {
     this.router.get('/', (req: Request, res: Response) => {
       res.render('index', { title: 'Express' });
     });
-    this.router.use(`${this.path}docs`, swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
+    this.router.use(`${this.path}api-docs`, swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
   }
 }
 

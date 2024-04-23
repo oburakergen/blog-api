@@ -21,7 +21,7 @@ const schema = new Schema<Category>({
   photo: {
     type: String,
   },
-  active: {
+  status: {
     type: String,
     enum: Object.values(Status),
   },
@@ -29,7 +29,7 @@ const schema = new Schema<Category>({
     type: Date,
     default: Date.now,
   },
-  parentCategory: {
+  parentId: {
     type: String,
   },
 });

@@ -5,7 +5,7 @@ export interface ICategory {
   slug: string;
   description: string | null;
   photo: string | null;
-  parentCategory: string | null;
-  active: Status;
+  parentId: string | null;
+  status: Status;
   createdAt: Date;
 }
