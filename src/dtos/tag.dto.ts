@@ -1,7 +1,7 @@
 import { ITag } from '../interfaces/tags.interface';
 import { z } from 'zod';
 
-export type TagCreate = Pick<ITag, 'title' | 'createdAt'>;
+export type TagCreate = Pick<ITag, 'title' | 'createdAt' | 'updatedAt'>;
 
 export const createTagSchema = z.object({
   title: z.string().min(3).max(255),

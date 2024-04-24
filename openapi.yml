@@ -9,7 +9,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.11
 servers:
-  - url: http://localhost:4000
+  - url: http://localhost:3000
 tags:
   - name: blog
   - name: category
@@ -188,24 +188,51 @@ paths:
           description: Invalid input
         '422':
           description: Validation exception
-    put:
+  /categories/{categoryId}:
+    get:
       parameters:
-        - name: id
+        - name: categoryId
           in: path
-          description: ID of blog that needs to be updated
+          description: ID of category that needs to be updated
           required: true
           schema:
             type: string
       tags:
         - category
-      summary: Update an existing category
-      description: Update an existing category
-      operationId: updateCategory
+      summary: find category by ID
+      description: find category by ID
+      operationId: getCategoryById
       responses:
         '200':
           description: Successful operation
           content:
-            multipart/form-data:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Category not found
+        '422':
+          description: Validation exception
+    put:
+      parameters:
+        - name: categoryId
+          in: path
+          description: ID of category that needs to be updated
+          required: true
+          schema:
+            type: string
+      tags:
+        - category
+      summary: Update an existing tag
+      description: Update an existing tag
+      operationId: updateTag
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
               schema:
                 $ref: '#/components/schemas/Category'
         '400':
@@ -223,7 +250,7 @@ paths:
         required: true
     delete:
       parameters:
-        - name: id
+        - name: categoryId
           in: path
           description: ID of category that needs to be deleted
           required: true
@@ -272,7 +299,7 @@ paths:
       requestBody:
         description: Create a new tag in the store
         content:
-          multipart/form-data:
+          application/json:
             schema:
               $ref: '#/components/schemas/Tagging'
         required: true
@@ -288,6 +315,32 @@ paths:
         '422':
           description: Validation exception
   /tags/{tagId}:
+    get:
+      parameters:
+        - name: tagId
+          in: path
+          description: ID of tag that needs to be updated
+          required: true
+          schema:
+            type: string
+      tags:
+        - tagging
+      summary: find tag by ID
+      description: find tag by ID
+      operationId: getTagById
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tagging'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Tag not found
+        '422':
+          description: Validation exception
     put:
       parameters:
         - name: tagId
@@ -346,6 +399,8 @@ paths:
 components:
   schemas:
     Tagging:
+      required:
+        - title
       type: object
       properties:
         title:
@@ -353,31 +408,26 @@ components:
     Category:
       required:
         - title
-        - description
         - status
       type: object
       properties:
         title:
           type: string
-          example: Blog title
+          example: Category title
         description:
-          type: string
-          example: Blog description
+          oneOf:
+            - type: "string"
+            - type: "null"
+          example: Category description
         photo:
           type: string
           format: binary
         status:
           type: string
-          description: blog status in the store
+          description: Category status in the store
           enum:
-              - published
-              - draft
-              - deleted
-        createdAt:
-            type: "null"
-            format: date-time
-            example: 2021-09-01T00:00:00.000Z
-            nullable: true
+              - active
+              - passive
         parentId:
             oneOf:
               - type: "string"

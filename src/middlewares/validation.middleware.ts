@@ -8,6 +8,10 @@ export function validateData(schema: z.ZodObject<any, any>) {
     try {
       req.body = schema.parse(req.body);
 
+      if (req.file) {
+        req.body = { ...req.body, [req.file.fieldname]: req.file };
+      }
+
       next();
     } catch (error) {
       if (error instanceof ZodError) {

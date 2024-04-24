@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import TagService from '../services/tag.service';
 import { success, error } from '../utils/response';
 
-class BlogsController {
+class TagController {
   protected tagService = new TagService();
 
   public getTags = async (req: Request, res: Response) => {
@@ -42,6 +42,7 @@ class BlogsController {
       const tagId = req.params.id;
       const requests = req.body;
       const updatedTagData = await this.tagService.update(tagId, requests);
+
       return success(res, updatedTagData);
     } catch (err) {
       return error(res, err.message, err.status);
@@ -60,4 +61,4 @@ class BlogsController {
   };
 }
 
-export default BlogsController;
+export default TagController;

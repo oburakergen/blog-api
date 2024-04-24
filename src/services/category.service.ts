@@ -1,52 +1,80 @@
-import categoryModel from '../models/blogs.model';
+import categoryModel from '../models/category.model';
 import { CategoryCreate } from '../dtos/category.dto';
 import slugify from 'slugify';
 import { HttpException } from '../exceptions/HttpException';
+import { ObjectId } from 'mongodb';
+import { AwsS3 } from '../utils/aws';
 
 class CategoryService {
   private categories = categoryModel;
 
-  public async findAllCategories() {
-    const categories = await this.categories.find();
-
-    return categories;
+  public async findAll() {
+    return this.categories.find();
   }
 
-  public async findCategoryById(categoryId: number) {
-    const category = await this.categories.findById(categoryId);
-
-    return category;
+  public async findById(id: string) {
+    return this.categories.findById(new ObjectId(id));
   }
 
-  public async createCategory(categoryData: CategoryCreate) {
-    await this.categories.create({
-      ...categoryData,
-      slug: slugify(categoryData.title, {
-        replacement: '-',
-      }),
+  public async create(data: CategoryCreate) {
+    const slug = slugify(data.title, {
+      replacement: '-',
     });
 
-    return categoryData;
-  }
+    const parentId = await this.categories.findById(new ObjectId(data.parentId));
+    const isExist = await this.categories.findOne({ slug });
+    if (isExist) throw new HttpException(409, `Tag with slug ${slug} already exists`);
 
-  public async updateCategory(categoryId: number, categoryData: CategoryCreate) {
-    await this.categories.findByIdAndUpdate(categoryId, {
-      ...categoryData,
-      slug: slugify(categoryData.title, {
-        replacement: '-',
-      }),
+    delete data.parentId;
+
+    if (data.photo) {
+      try {
+        const s3 = new AwsS3();
+
+        const photoUrl = await s3.uploadFile('bucket', 'key', data.photo.path);
+
+        console.log(photoUrl);
+
+        data.photo = photoUrl;
+      } catch (err) {
+        throw new HttpException(500, 'Failed to upload photo');
+      }
+    }
+
+    return this.categories.create({
+      ...data,
+      slug,
+      parentId,
     });
-
-    return categoryData;
   }
 
-  public async deleteCategory(blogId: number) {
-    const findBlog = this.categories.findOne({ where: { id: blogId } });
-    if (!findBlog) throw new HttpException(409, "You're not a category");
+  public async update(id: string, data: CategoryCreate) {
+    const objectId = new ObjectId(id);
+    const slug = slugify(data.title, {
+      replacement: '-',
+    });
+    const isExist = await this.categories.findOne({ slug, _id: { $ne: objectId } });
+    if (isExist) throw new HttpException(409, `Tag with slug ${slug} already exists`);
 
-    await findBlog.deleteOne({ where: { id: blogId } });
+    const item = await this.categories.findByIdAndUpdate(
+      id,
+      {
+        ...data,
+        slug,
+      },
+      { new: false },
+    );
+    if (!item) throw new HttpException(409, `Tag with id ${id} not found`);
 
-    return findBlog;
+    return item;
+  }
+
+  public async delete(id: string) {
+    const item = await this.categories.findByIdAndDelete(new ObjectId(id));
+
+    if (!item) throw new HttpException(409, `Tag with id ${id} not found`);
+
+    return item;
   }
 }
 

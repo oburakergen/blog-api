@@ -17,6 +17,10 @@ const schema = new Schema<Tag>({
     type: Date,
     default: Date.now,
   },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const tagModel = model<Tag>(DOCUMENT_NAME.Tag, schema, COLLECTION_NAME.Tag);

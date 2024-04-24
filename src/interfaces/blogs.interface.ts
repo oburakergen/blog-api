@@ -1,5 +1,5 @@
 import { Status } from './global.interface';
-import { Category } from '../models/categories.model';
+import { Category } from '../models/category.model';
 import { Tag } from '../models/tag.model';
 
 export interface IBlog {

@@ -20,12 +20,17 @@ const schema = new Schema<Category>({
   },
   photo: {
     type: String,
+    required: false,
   },
   status: {
     type: String,
     enum: Object.values(Status),
   },
   createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
     type: Date,
     default: Date.now,
   },
