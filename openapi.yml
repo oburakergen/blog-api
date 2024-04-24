@@ -70,7 +70,7 @@ paths:
         - blog
       summary: Add a new blog to the store
       description: Add a new blog to the store
-      operationId: addPet
+      operationId: addBlog
       requestBody:
         description: Create a new blog in the store
         content:
@@ -169,7 +169,7 @@ paths:
         - category
       summary: Add a new category to the store
       description: Add a new category to the store
-      operationId: addPet
+      operationId: addCategory
       requestBody:
         description: Create a new category in the store
         content:
@@ -244,7 +244,7 @@ paths:
       requestBody:
         description: Update an existing category in the store
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/Category'
         required: true
@@ -295,7 +295,7 @@ paths:
         - tagging
       summary: Add a new tag to the store
       description: Add a new tag to the store
-      operationId: addPet
+      operationId: addTag
       requestBody:
         description: Create a new tag in the store
         content:

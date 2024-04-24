@@ -47,6 +47,14 @@ export const updateCategorySchema = z.object({
       path: z.string(),
       size: z.number(),
     })
+    .refine(
+      files => {
+        files.size <= MAX_FILE_SIZE && ACCEPTED_IMAGE_TYPES.includes(files.mimetype);
+      },
+      {
+        message: 'Invalid file type or size',
+      },
+    )
     .optional(),
   status: z.enum(['active', 'inactive']).optional(),
   parentId: z.string().optional(),

@@ -1,6 +1,7 @@
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand, type ObjectCannedACL } from '@aws-sdk/client-s3';
 import { Config } from '../config';
 import logger from './logger';
+import { HttpException } from '../exceptions/HttpException';
 
 export class AwsS3 {
   private s3Client: S3Client;
@@ -15,29 +16,30 @@ export class AwsS3 {
     });
   }
 
-  async uploadFile(bucket: string, key: string, body: string, acl: ObjectCannedACL = 'public-read') {
+  async uploadFile(key: string, body: Buffer, contentType: string, acl: ObjectCannedACL = 'public-read') {
     try {
       await this.s3Client.send(
         new PutObjectCommand({
-          Bucket: bucket,
+          Bucket: Config.awsBucketName,
           Key: key,
           Body: body,
           ACL: acl,
+          ContentType: contentType,
         }),
       );
 
-      return `https://${bucket}.s3.${Config.awsRegion}.amazonaws.com/${key}`;
+      return `https://${Config.awsBucketName}.s3.${Config.awsRegion}.amazonaws.com/${key}`;
     } catch (err) {
       logger.error(err);
-      return null;
+      throw new HttpException(500, 'Failed to upload');
     }
   }
 
-  async getFile(bucket: string, key: string) {
+  async getFile(key: string) {
     try {
       const response = await this.s3Client.send(
         new GetObjectCommand({
-          Bucket: bucket,
+          Bucket: Config.awsBucketName,
           Key: key,
         }),
       );
@@ -49,11 +51,11 @@ export class AwsS3 {
     }
   }
 
-  async deleteFile(bucket: string, key: string) {
+  async deleteFile(key: string) {
     try {
       await this.s3Client.send(
         new DeleteObjectCommand({
-          Bucket: bucket,
+          Bucket: Config.awsBucketName,
           Key: key,
         }),
       );

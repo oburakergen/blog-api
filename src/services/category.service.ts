@@ -20,25 +20,26 @@ class CategoryService {
     const slug = slugify(data.title, {
       replacement: '-',
     });
+    let parentId = null;
 
-    const parentId = await this.categories.findById(new ObjectId(data.parentId));
-    const isExist = await this.categories.findOne({ slug });
-    if (isExist) throw new HttpException(409, `Tag with slug ${slug} already exists`);
+    try {
+      parentId = data.parentId ? await this.categories.findById(new ObjectId(data.parentId)) : null;
+    } catch (error) {
+      parentId = null;
+    }
 
     delete data.parentId;
 
+    const isExist = await this.categories.findOne({ slug });
+    if (isExist) throw new HttpException(409, `Category with slug ${slug} already exists`);
+
     if (data.photo) {
-      try {
-        const s3 = new AwsS3();
+      const s3 = new AwsS3();
 
-        const photoUrl = await s3.uploadFile('bucket', 'key', data.photo.path);
+      const type = data.photo.originalname.split('.').pop();
+      const originalName = slug + '.' + type;
 
-        console.log(photoUrl);
-
-        data.photo = photoUrl;
-      } catch (err) {
-        throw new HttpException(500, 'Failed to upload photo');
-      }
+      data.photo = await s3.uploadFile(originalName, data.photo.buffer, data.photo.mimetype);
     }
 
     return this.categories.create({
@@ -53,18 +54,40 @@ class CategoryService {
     const slug = slugify(data.title, {
       replacement: '-',
     });
+    let parentId = null;
     const isExist = await this.categories.findOne({ slug, _id: { $ne: objectId } });
     if (isExist) throw new HttpException(409, `Tag with slug ${slug} already exists`);
+    const item = await this.categories.findById(objectId);
 
-    const item = await this.categories.findByIdAndUpdate(
-      id,
+    try {
+      parentId = data.parentId ? await this.categories.findById(new ObjectId(data.parentId)) : null;
+    } catch (error) {
+      parentId = null;
+    }
+
+    if (data.photo && data.photo.buffer) {
+      const s3 = new AwsS3();
+      const type = data.photo.originalname.split('.').pop();
+      const originalName = slug + '.' + type;
+
+      if (item.photo) {
+        console.log(item.photo);
+        await s3.deleteFile(item.photo.split('/').pop());
+      }
+
+      data.photo = await s3.uploadFile(originalName, data.photo.buffer, data.photo.mimetype);
+    }
+
+    await this.categories.findByIdAndUpdate(
+      objectId,
       {
         ...data,
         slug,
+        parentId,
       },
       { new: false },
     );
-    if (!item) throw new HttpException(409, `Tag with id ${id} not found`);
+    if (!item) throw new HttpException(409, `Category with id ${id} not found`);
 
     return item;
   }
@@ -72,7 +95,12 @@ class CategoryService {
   public async delete(id: string) {
     const item = await this.categories.findByIdAndDelete(new ObjectId(id));
 
-    if (!item) throw new HttpException(409, `Tag with id ${id} not found`);
+    if (!item) throw new HttpException(409, `Category with id ${id} not found`);
+
+    if (item.photo) {
+      const s3 = new AwsS3();
+      await s3.deleteFile(item.photo.split('/').pop());
+    }
 
     return item;
   }
