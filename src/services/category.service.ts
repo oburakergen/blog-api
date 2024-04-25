@@ -56,7 +56,7 @@ class CategoryService {
     });
     let parentId = null;
     const isExist = await this.categories.findOne({ slug, _id: { $ne: objectId } });
-    if (isExist) throw new HttpException(409, `Tag with slug ${slug} already exists`);
+    if (isExist) throw new HttpException(409, `Category with slug ${slug} already exists`);
     const item = await this.categories.findById(objectId);
 
     try {

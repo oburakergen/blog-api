@@ -30,6 +30,10 @@ const schema = new Schema<Blog>({
     type: Date,
     default: Date.now,
   },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
   category: {
     type: Schema.Types.ObjectId,
     ref: DOCUMENT_NAME.Category,
@@ -42,6 +46,6 @@ const schema = new Schema<Blog>({
   ],
 });
 
-const categoryModel = model<Blog>(DOCUMENT_NAME.Blog, schema, COLLECTION_NAME.Blog);
+const blogModel = model<Blog>(DOCUMENT_NAME.Blog, schema, COLLECTION_NAME.Blog);
 
-export default categoryModel;
+export default blogModel;

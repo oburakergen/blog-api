@@ -6,9 +6,10 @@ export interface IBlog {
   title: string;
   slug: string;
   content: string;
-  photo: string;
+  photo: any;
   active: Status;
-  createdAt: Date;
   category: Category;
   tags: Tag[];
+  createdAt: Date;
+  updatedAt: Date;
 }
